@@ -3,8 +3,10 @@ import { StyleSheet, Text, View, TextInput, TouchableOpacity, Alert, TouchableWi
 import { LinearGradient } from 'expo-linear-gradient';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
 
 export default function CardScreen() {
+  const navigation = useNavigation();
   const [balance, setBalance] = useState(0);
   const [amount, setAmount] = useState('');
 
@@ -40,23 +42,24 @@ export default function CardScreen() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container}>
-        <Text style={styles.title}>Cards</Text>
-        
-        <LinearGradient
-          colors={['#6C5CE7', '#8E7CF3']}
-          style={styles.card}
-        >
-          <Text style={styles.cardLabel}>Available Balance</Text>
-          <Text style={styles.balanceAmount}>RM {balance.toFixed(2)}</Text>
-          <View style={styles.cardFooter}>
-            <Text style={styles.cardNumber}>**** **** **** 4242</Text>
-            <View style={styles.cardChip} />
-          </View>
-        </LinearGradient>
+    <View style={styles.container}>
+      <Text style={styles.title}>Cards</Text>
+      
+      <LinearGradient
+        colors={['#6C5CE7', '#8E7CF3']}
+        style={styles.card}
+      >
+        <Text style={styles.cardLabel}>Available Balance</Text>
+        <Text style={styles.balanceAmount}>RM {balance.toFixed(2)}</Text>
+        <View style={styles.cardFooter}>
+          <Text style={styles.cardNumber}>**** **** **** 4242</Text>
+          <View style={styles.cardChip} />
+        </View>
+      </LinearGradient>
 
-        <View style={styles.actionSection}>
+      <View style={styles.actionSection}>
+        {/* Remove the TouchableWithoutFeedback wrapper */}
+        <View style={styles.inputWrapper}>
           <TextInput
             style={styles.input}
             placeholder="Enter amount"
@@ -65,25 +68,25 @@ export default function CardScreen() {
             value={amount}
             onChangeText={setAmount}
           />
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, styles.depositButton]}
-              onPress={handleDeposit}
-            >
-              <Ionicons name="arrow-down" size={20} color="#FFFFFF" />
-              <Text style={styles.buttonText}>Deposit</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, styles.payButton]}
-              onPress={() => Alert.alert('Coming Soon', 'Payment feature will be available soon!')}
-            >
-              <Ionicons name="card" size={20} color="#FFFFFF" />
-              <Text style={styles.buttonText}>Pay</Text>
-            </TouchableOpacity>
-          </View>
+        </View>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.button, styles.depositButton]}
+            onPress={handleDeposit}
+          >
+            <Ionicons name="arrow-down" size={20} color="#FFFFFF" />
+            <Text style={styles.buttonText}>Deposit</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, styles.payButton]}
+            onPress={() => navigation.navigate('Payment')}
+          >
+            <Ionicons name="card" size={20} color="#FFFFFF" />
+            <Text style={styles.buttonText}>Pay</Text>
+          </TouchableOpacity>
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </View>
   );
 }
 
@@ -150,6 +153,10 @@ const styles = StyleSheet.create({
   },
   actionSection: {
     marginTop: 20
+  },
+  inputWrapper: {
+    width: '100%',
+    marginBottom: 16,
   },
   input: {
     backgroundColor: '#FFFFFF',
